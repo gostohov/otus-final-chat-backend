@@ -1,0 +1,39 @@
+app:
+  cors:
+    enabled: true
+
+jwt:
+  secret: x_HxiNDK-Cy9jrBtBbYr99k8Aq3KyldnvjGA07X6rIsx-zaPw9Ct8i8oHf9pWYX67Hq9k257Oi3dTwjVlOkH8GxtI2R5fOez78O7EOLufHHOzKKkkGbJB2jUsPeMclKN-JJGZ2xD-3W2GR8KXMlUlV5C2qBbCnrH6S4JLpJ1hzM
+
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/chat
+    password: letmein
+    username: root
+    jpa:
+      show-sql: true
+      hibernate:
+        ddl-auto: update
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  data:
+    cassandra:
+      keyspace-name: chat
+      contact-points: localhost
+      local-datacenter: datacenter1
+      username: cassandra
+      password: cassandra
+      port: 9042
+  flyway:
+    url: jdbc:mysql://localhost:3306
+    locations: classpath:db/migration
+    user: root
+    password: letmein
+    schemas: chat
+
+chat:
+  relay:
+    host: localhost
+    port: 61613
