@@ -111,6 +111,12 @@ public class UserResource extends ExceptionHandling {
         return new ResponseEntity<>(users, OK);
     }
 
+    @GetMapping("/list/{searchString}")
+    public ResponseEntity<List<User>> getUsersBySearchString(@PathVariable("searchString") String searchString) {
+        List<User> users = userService.getUsersBySearchString(searchString);
+        return new ResponseEntity<>(users, OK);
+    }
+
     @GetMapping("/reset-password/{email}")
     public ResponseEntity<HttpResponse> resetPassword(@PathVariable("email") String email) throws EmailNotFoundException {
         userService.resetPassword(email);
