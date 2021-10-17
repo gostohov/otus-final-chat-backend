@@ -4,8 +4,8 @@ import com.gostokhov.chat.constant.FileConstant;
 import com.gostokhov.chat.domain.HttpResponse;
 import com.gostokhov.chat.domain.UserPrincipal;
 import com.gostokhov.chat.dto.user.UserDto;
-import com.gostokhov.chat.dto.user.UserDtoLogin;
-import com.gostokhov.chat.dto.user.UserDtoRegister;
+import com.gostokhov.chat.dto.user.UserLoginDto;
+import com.gostokhov.chat.dto.user.UserRegisterDto;
 import com.gostokhov.chat.entites.User;
 import com.gostokhov.chat.exception.ExceptionHandling;
 import com.gostokhov.chat.exception.domain.EmailExistException;
@@ -50,8 +50,8 @@ public class UserResource extends ExceptionHandling {
     private final ModelMapper modelMapper;
 
     @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody UserDtoLogin userDtoLogin) {
-        User user = modelMapper.map(userDtoLogin, User.class);
+    public ResponseEntity<UserDto> login(@RequestBody UserLoginDto userLoginDto) {
+        User user = modelMapper.map(userLoginDto, User.class);
         authenticate(user.getUsername(), user.getPassword());
         User loginUser = userService.findUserByUsername(user.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
@@ -61,8 +61,8 @@ public class UserResource extends ExceptionHandling {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody UserDtoRegister userDtoRegister) throws UserNotFoundException, EmailExistException, UsernameExistException {
-        User user = modelMapper.map(userDtoRegister, User.class);
+    public ResponseEntity<UserDto> register(@RequestBody UserRegisterDto userRegisterDto) throws UserNotFoundException, EmailExistException, UsernameExistException {
+        User user = modelMapper.map(userRegisterDto, User.class);
         User newUser = userService.register(
                 user.getFirstName(),
                 user.getLastName(),

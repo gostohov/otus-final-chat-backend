@@ -3,7 +3,7 @@ package com.gostokhov.chat.dto.user;
 import lombok.Data;
 
 @Data
-public class UserDtoRegister {
+public class UserRegisterDto {
     String firstName;
     String lastName;
     String username;
