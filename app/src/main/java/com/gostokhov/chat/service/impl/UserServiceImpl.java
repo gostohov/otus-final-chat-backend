@@ -1,7 +1,7 @@
 package com.gostokhov.chat.service.impl;
 
 import com.gostokhov.chat.constant.FileConstant;
-import com.gostokhov.chat.domain.User;
+import com.gostokhov.chat.entites.User;
 import com.gostokhov.chat.domain.UserPrincipal;
 import com.gostokhov.chat.enumiration.Role;
 import com.gostokhov.chat.exception.domain.EmailExistException;
@@ -84,8 +84,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setEmail(email);
         user.setJoinDate(new Date());
         user.setPassword(encodePassword(password));
-        user.setActive(true);
-        user.setNotLocked(true);
+        user.setIsActive(true);
+        user.setIsNotLocked(true);
         user.setRoles(Role.ROLE_USER.name());
         user.setAuthorities(Role.ROLE_USER.getAuthorities());
         user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
@@ -106,8 +106,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setJoinDate(new Date());
         user.setEmail(email);
         user.setPassword(encodePassword(password));
-        user.setActive(isActive);
-        user.setNotLocked(isNotLocked);
+        user.setIsActive(isActive);
+        user.setIsNotLocked(isNotLocked);
         user.setRoles(getRoleEnumName(role).name());
         user.setAuthorities(getRoleEnumName(role).getAuthorities());
         user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
@@ -123,8 +123,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         currentUser.setLastName(newLastName);
         currentUser.setUsername(newUsername);
         currentUser.setEmail(newEmail);
-        currentUser.setActive(isActive);
-        currentUser.setNotLocked(isNotLocked);
+        currentUser.setIsActive(isActive);
+        currentUser.setIsNotLocked(isNotLocked);
         currentUser.setRoles(getRoleEnumName(role).name());
         currentUser.setAuthorities(getRoleEnumName(role).getAuthorities());
         userRepository.save(currentUser);
@@ -222,8 +222,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     private void validateLoginAttempt(User user) {
-        if (user.getNotLocked()) {
-            user.setNotLocked(!loginAttemptService.hasExceedMaxAttempts(user.getUsername()));
+        if (user.getIsNotLocked()) {
+            user.setIsNotLocked(!loginAttemptService.hasExceedMaxAttempts(user.getUsername()));
         } else {
             loginAttemptService.evictUserFromLoginAttemptCache(user.getUsername());
         }

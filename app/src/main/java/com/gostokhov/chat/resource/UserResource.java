@@ -2,7 +2,7 @@ package com.gostokhov.chat.resource;
 
 import com.gostokhov.chat.constant.FileConstant;
 import com.gostokhov.chat.domain.HttpResponse;
-import com.gostokhov.chat.domain.User;
+import com.gostokhov.chat.entites.User;
 import com.gostokhov.chat.domain.UserPrincipal;
 import com.gostokhov.chat.exception.ExceptionHandling;
 import com.gostokhov.chat.exception.domain.EmailExistException;

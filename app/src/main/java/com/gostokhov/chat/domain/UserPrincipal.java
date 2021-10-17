@@ -1,5 +1,7 @@
 package com.gostokhov.chat.domain;
 
+import com.gostokhov.chat.entites.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,12 +11,9 @@ import static java.util.Arrays.stream;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
-    private com.gostokhov.chat.domain.User user;
-
-    public UserPrincipal(com.gostokhov.chat.domain.User user) {
-        this.user = user;
-    }
+    private final User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -38,7 +37,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.user.getNotLocked();
+        return this.user.getIsNotLocked();
     }
 
     @Override
@@ -48,6 +47,6 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.user.getActive();
+        return this.user.getIsActive();
     }
 }

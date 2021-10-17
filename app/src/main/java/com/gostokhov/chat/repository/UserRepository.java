@@ -1,7 +1,6 @@
 package com.gostokhov.chat.repository;
 
-import com.gostokhov.chat.domain.User;
-import org.springframework.data.domain.Example;
+import com.gostokhov.chat.entites.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

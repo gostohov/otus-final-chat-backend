@@ -1,6 +1,6 @@
 package com.gostokhov.chat.service;
 
-import com.gostokhov.chat.domain.User;
+import com.gostokhov.chat.entites.User;
 import com.gostokhov.chat.exception.domain.EmailExistException;
 import com.gostokhov.chat.exception.domain.EmailNotFoundException;
 import com.gostokhov.chat.exception.domain.UserNotFoundException;
