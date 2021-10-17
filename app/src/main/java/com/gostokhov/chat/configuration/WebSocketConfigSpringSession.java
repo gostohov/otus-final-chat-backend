@@ -1,6 +1,7 @@
 package com.gostokhov.chat.configuration;
 
 import com.gostokhov.chat.utility.JWTTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -32,6 +33,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
 @EnableScheduling
+@RequiredArgsConstructor
 @EnableWebSocketMessageBroker
 public class WebSocketConfigSpringSession extends AbstractSessionWebSocketMessageBrokerConfigurer<ExpiringSession> {
     @Value("${chat.relay.host}")
@@ -40,11 +42,7 @@ public class WebSocketConfigSpringSession extends AbstractSessionWebSocketMessag
     @Value("${chat.relay.port}")
     private Integer relayPort;
 
-    private JWTTokenProvider jwtTokenProvider;
-
-    public WebSocketConfigSpringSession(JWTTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final JWTTokenProvider jwtTokenProvider;
 
     @Override
     protected void configureStompEndpoints(StompEndpointRegistry registry) {

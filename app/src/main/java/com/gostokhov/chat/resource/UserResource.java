@@ -11,6 +11,7 @@ import com.gostokhov.chat.exception.domain.UserNotFoundException;
 import com.gostokhov.chat.exception.domain.UsernameExistException;
 import com.gostokhov.chat.service.UserService;
 import com.gostokhov.chat.utility.JWTTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,21 +34,16 @@ import static com.gostokhov.chat.constant.SecurityConstant.JWT_TOKEN_HEADER;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = {"/", "/user"})
 public class UserResource extends ExceptionHandling {
     public static final String EMAIL_SENT = "An email with new password was sent to: ";
     public static final String USER_DELETED_SUCCESSFULLY = "User deleted successfully";
-    private UserService userService;
-    private AuthenticationManager authenticationManager;
-    private JWTTokenProvider jwtTokenProvider;
 
-    @Autowired
-    public UserResource(UserService userService, AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider) {
-        this.userService = userService;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JWTTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody User user) {

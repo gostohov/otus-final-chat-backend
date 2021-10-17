@@ -6,23 +6,19 @@ import com.gostokhov.chat.repository.ChatRoomRepository;
 import com.gostokhov.chat.service.ChatRoomService;
 import com.gostokhov.chat.service.InstantMessageService;
 import com.gostokhov.chat.utility.Destinations;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ChatRoomServiceImpl implements ChatRoomService {
 
-    private ChatRoomRepository chatRoomRepository;
-    private SimpMessagingTemplate webSocketMessagingTemplate;
-
-    @Autowired
-    public ChatRoomServiceImpl(ChatRoomRepository chatRoomRepository, SimpMessagingTemplate webSocketMessagingTemplate) {
-        this.chatRoomRepository = chatRoomRepository;
-        this.webSocketMessagingTemplate = webSocketMessagingTemplate;
-    }
+    private final ChatRoomRepository chatRoomRepository;
+    private final SimpMessagingTemplate webSocketMessagingTemplate;
 
     @Override
     public ChatRoom save(ChatRoom chatRoom) {

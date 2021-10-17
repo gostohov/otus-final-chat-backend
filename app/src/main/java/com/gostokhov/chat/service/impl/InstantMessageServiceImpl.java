@@ -5,20 +5,17 @@ import com.gostokhov.chat.domain.InstantMessage;
 import com.gostokhov.chat.repository.InstantMessageRepository;
 import com.gostokhov.chat.service.ChatRoomService;
 import com.gostokhov.chat.service.InstantMessageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class InstantMessageServiceImpl implements InstantMessageService {
 
-	private InstantMessageRepository instantMessageRepository;
-
-	@Autowired
-	public InstantMessageServiceImpl(ChatRoomService chatRoomService, InstantMessageRepository instantMessageRepository) {
-		this.instantMessageRepository = instantMessageRepository;
-	}
+	private final InstantMessageRepository instantMessageRepository;
 
 	@Override
 	public void appendInstantMessageToConversations(InstantMessage instantMessage) {
