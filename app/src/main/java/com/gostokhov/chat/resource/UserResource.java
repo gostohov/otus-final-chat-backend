@@ -2,8 +2,11 @@ package com.gostokhov.chat.resource;
 
 import com.gostokhov.chat.constant.FileConstant;
 import com.gostokhov.chat.domain.HttpResponse;
-import com.gostokhov.chat.entites.User;
 import com.gostokhov.chat.domain.UserPrincipal;
+import com.gostokhov.chat.dto.user.UserDto;
+import com.gostokhov.chat.dto.user.UserDtoLogin;
+import com.gostokhov.chat.dto.user.UserDtoRegister;
+import com.gostokhov.chat.entites.User;
 import com.gostokhov.chat.exception.ExceptionHandling;
 import com.gostokhov.chat.exception.domain.EmailExistException;
 import com.gostokhov.chat.exception.domain.EmailNotFoundException;
@@ -12,7 +15,7 @@ import com.gostokhov.chat.exception.domain.UsernameExistException;
 import com.gostokhov.chat.service.UserService;
 import com.gostokhov.chat.utility.JWTTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,18 +47,22 @@ public class UserResource extends ExceptionHandling {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JWTTokenProvider jwtTokenProvider;
+    private final ModelMapper modelMapper;
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user) {
+    public ResponseEntity<UserDto> login(@RequestBody UserDtoLogin userDtoLogin) {
+        User user = modelMapper.map(userDtoLogin, User.class);
         authenticate(user.getUsername(), user.getPassword());
         User loginUser = userService.findUserByUsername(user.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-        return new ResponseEntity<>(loginUser, jwtHeader, OK);
+        UserDto userDto = modelMapper.map(loginUser, UserDto.class);
+        return new ResponseEntity<>(userDto, jwtHeader, OK);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) throws UserNotFoundException, EmailExistException, UsernameExistException {
+    public ResponseEntity<UserDto> register(@RequestBody UserDtoRegister userDtoRegister) throws UserNotFoundException, EmailExistException, UsernameExistException {
+        User user = modelMapper.map(userDtoRegister, User.class);
         User newUser = userService.register(
                 user.getFirstName(),
                 user.getLastName(),
@@ -63,7 +70,8 @@ public class UserResource extends ExceptionHandling {
                 user.getUsername(),
                 user.getPassword()
         );
-        return new ResponseEntity<>(newUser, OK);
+        UserDto userDto = modelMapper.map(newUser, UserDto.class);
+        return new ResponseEntity<>(userDto, OK);
     }
 
     @PostMapping("/add")
