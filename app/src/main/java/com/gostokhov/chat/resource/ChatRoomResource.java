@@ -1,10 +1,9 @@
 package com.gostokhov.chat.resource;
 
-import com.gostokhov.chat.domain.InstantMessage;
+import com.gostokhov.chat.entites.InstantMessage;
 import com.gostokhov.chat.service.ChatRoomService;
 import com.gostokhov.chat.service.InstantMessageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

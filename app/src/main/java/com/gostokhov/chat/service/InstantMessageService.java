@@ -1,6 +1,6 @@
 package com.gostokhov.chat.service;
 
-import com.gostokhov.chat.domain.InstantMessage;
+import com.gostokhov.chat.entites.InstantMessage;
 
 import java.util.List;
 

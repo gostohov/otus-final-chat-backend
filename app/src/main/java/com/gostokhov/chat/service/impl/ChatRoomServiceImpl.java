@@ -1,13 +1,11 @@
 package com.gostokhov.chat.service.impl;
 
-import com.gostokhov.chat.domain.ChatRoom;
-import com.gostokhov.chat.domain.InstantMessage;
+import com.gostokhov.chat.entites.ChatRoom;
+import com.gostokhov.chat.entites.InstantMessage;
 import com.gostokhov.chat.repository.ChatRoomRepository;
 import com.gostokhov.chat.service.ChatRoomService;
-import com.gostokhov.chat.service.InstantMessageService;
 import com.gostokhov.chat.utility.Destinations;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 

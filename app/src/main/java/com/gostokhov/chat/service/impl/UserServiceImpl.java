@@ -1,8 +1,8 @@
 package com.gostokhov.chat.service.impl;
 
 import com.gostokhov.chat.constant.FileConstant;
-import com.gostokhov.chat.entites.User;
 import com.gostokhov.chat.domain.UserPrincipal;
+import com.gostokhov.chat.entites.User;
 import com.gostokhov.chat.enumiration.Role;
 import com.gostokhov.chat.exception.domain.EmailExistException;
 import com.gostokhov.chat.exception.domain.EmailNotFoundException;
@@ -16,7 +16,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.MessagingException;
 import org.springframework.security.core.userdetails.UserDetails;

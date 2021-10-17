@@ -1,7 +1,7 @@
 package com.gostokhov.chat.service;
 
-import com.gostokhov.chat.domain.ChatRoom;
-import com.gostokhov.chat.domain.InstantMessage;
+import com.gostokhov.chat.entites.ChatRoom;
+import com.gostokhov.chat.entites.InstantMessage;
 
 import java.util.List;
 

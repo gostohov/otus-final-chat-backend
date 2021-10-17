@@ -1,19 +1,22 @@
-package com.gostokhov.chat.domain;
+package com.gostokhov.chat.entites;
 
-import org.springframework.data.annotation.Transient;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.cassandra.core.cql.Ordering;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-// TODO храни чатики в базе
+@Setter
+@Getter
+@RequiredArgsConstructor
+@ToString
 @Table("chatrooms")
 public class ChatRoom {
-
     @PrimaryKeyColumn(name = "id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
     private String id;
 
@@ -22,67 +25,6 @@ public class ChatRoom {
 
     private String name;
     private String description;
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    @Transient
-    private List<ChatRoomUser> connectedUsers = new ArrayList<>();
-
-    public ChatRoom() {
-
-    }
-
-    public ChatRoom(String id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<ChatRoomUser> getConnectedUsers() {
-        return connectedUsers;
-    }
-
-    public void addUser(ChatRoomUser user) {
-        this.connectedUsers.add(user);
-    }
-
-    public void removeUser(ChatRoomUser user) {
-        this.connectedUsers.remove(user);
-    }
-
-    public int getNumberOfConnectedUsers() {
-        return this.connectedUsers.size();
-    }
 
     @Override
     public int hashCode() {

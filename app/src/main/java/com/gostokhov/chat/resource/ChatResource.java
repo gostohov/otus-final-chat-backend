@@ -1,6 +1,6 @@
 package com.gostokhov.chat.resource;
 
-import com.gostokhov.chat.domain.ChatRoom;
+import com.gostokhov.chat.entites.ChatRoom;
 import com.gostokhov.chat.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,10 @@
-package com.gostokhov.chat.domain;
+package com.gostokhov.chat.entites;
 
 import com.datastax.oss.driver.shaded.guava.common.base.Strings;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.cassandra.core.cql.Ordering;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
@@ -8,6 +12,10 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.Date;
 
+@Setter
+@Getter
+@RequiredArgsConstructor
+@ToString
 @Table("messages")
 public class InstantMessage {
 
@@ -22,60 +30,8 @@ public class InstantMessage {
     private String toUser;
     private String text;
 
-    public InstantMessage() {
-        this.date = new Date();
-    }
-
     public boolean isPublic() {
         return Strings.isNullOrEmpty(this.toUser);
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getChatRoomId() {
-        return chatRoomId;
-    }
-
-    public void setChatRoomId(String chatRoomId) {
-        this.chatRoomId = chatRoomId;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getFromUser() {
-        return fromUser;
-    }
-
-    public void setFromUser(String fromUser) {
-        this.fromUser = fromUser;
-    }
-
-    public String getToUser() {
-        return toUser;
-    }
-
-    public void setToUser(String toUser) {
-        this.toUser = toUser;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     @Override
