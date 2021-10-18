@@ -31,7 +31,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     // TODO: Тут лучше выкинуть exception
     @Override
     public ChatRoom findById(String chatRoomId) {
-        return chatRoomRepository.findById(chatRoomId).orElse(new ChatRoom());
+        return new ChatRoom(); // ref need
     }
 
     // TODO: Лучше сначала записать данные в базу, а потом отправить в топик

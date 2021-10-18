@@ -9,20 +9,21 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "users")
+@Table
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private Long id;
-    private String userId;
     private String firstName;
     private String lastName;
     private String username;
@@ -36,6 +37,15 @@ public class User implements Serializable {
     private String[] authorities;
     private Boolean isActive;
     private Boolean isNotLocked;
+
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_chat_room",
+        joinColumns = {@JoinColumn(name = "user_id")},
+        inverseJoinColumns = {@JoinColumn(name = "chat_room_id")}
+    )
+    @ToString.Exclude
+    private Set<ChatRoom> chatRooms = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

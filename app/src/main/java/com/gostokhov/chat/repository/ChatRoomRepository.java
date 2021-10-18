@@ -1,6 +1,6 @@
 package com.gostokhov.chat.repository;
 
 import com.gostokhov.chat.entites.ChatRoom;
-import org.springframework.data.cassandra.repository.CassandraRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ChatRoomRepository extends CassandraRepository<ChatRoom, String> {}
+public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {}

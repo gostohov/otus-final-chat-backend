@@ -4,27 +4,28 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.cassandra.core.cql.Ordering;
-import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
-import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
-import org.springframework.data.cassandra.core.mapping.Table;
 
-import java.util.Date;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
 @RequiredArgsConstructor
 @ToString
-@Table("chatrooms")
+@Entity
+@Table
 public class ChatRoom {
-    @PrimaryKeyColumn(name = "id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-    private String id;
-
-    @PrimaryKeyColumn(name = "date", ordinal = 1, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.ASCENDING)
-    private Date date;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
+    private Long id;
     private String name;
     private String description;
+
+    @ManyToMany(mappedBy = "chatRooms", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<User> users = new HashSet<>();
 
     @Override
     public int hashCode() {
