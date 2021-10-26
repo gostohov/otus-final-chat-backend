@@ -1,7 +1,10 @@
 package com.gostokhov.chat.service.impl;
 
 import com.gostokhov.chat.constant.FileConstant;
+import com.gostokhov.chat.domain.JwtToken;
 import com.gostokhov.chat.domain.UserPrincipal;
+import com.gostokhov.chat.dto.user.UserCredentialsDto;
+import com.gostokhov.chat.dto.user.UserRegisterDto;
 import com.gostokhov.chat.entites.User;
 import com.gostokhov.chat.enumiration.Role;
 import com.gostokhov.chat.exception.domain.EmailExistException;
@@ -9,8 +12,8 @@ import com.gostokhov.chat.exception.domain.EmailNotFoundException;
 import com.gostokhov.chat.exception.domain.UserNotFoundException;
 import com.gostokhov.chat.exception.domain.UsernameExistException;
 import com.gostokhov.chat.repository.UserRepository;
-import com.gostokhov.chat.service.LoginAttemptService;
 import com.gostokhov.chat.service.UserService;
+import com.gostokhov.chat.utility.JWTTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
@@ -18,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.MessagingException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,6 +39,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.gostokhov.chat.constant.UserImplConstant.*;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -49,6 +56,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final LoginAttemptService loginAttemptService;
+    private final JWTTokenProvider jwtTokenProvider;
+
+    @Override
+    public JwtToken generateJwtTokenPojo(UserCredentialsDto userCredentialsDto) throws UserNotFoundException {
+        User loginUser = findUserByUsername(userCredentialsDto.getUsername());
+        UserPrincipal userPrincipal = new UserPrincipal(loginUser);
+        return new JwtToken(jwtTokenProvider.generateJwtToken(userPrincipal));
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -68,23 +83,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User register(String firstName, String lastName, String email, String username, String password) throws UserNotFoundException, EmailExistException, UsernameExistException, MessagingException {
-        validateNewUsernameAndEmail(EMPTY, username, email);
+    public void register(UserRegisterDto userRegisterDto) throws UserNotFoundException, EmailExistException, UsernameExistException, MessagingException {
+        validateNewUsernameAndEmail(EMPTY, userRegisterDto.getUsername(), userRegisterDto.getEmail());
         User user = new User();
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setUsername(username);
-        user.setEmail(email);
+        user.setFirstName(userRegisterDto.getFirstName());
+        user.setLastName(userRegisterDto.getLastName());
+        user.setUsername(userRegisterDto.getUsername());
+        user.setEmail(userRegisterDto.getEmail());
         user.setJoinDate(new Date());
-        user.setPassword(encodePassword(password));
+        user.setPassword(encodePassword(userRegisterDto.getPassword()));
         user.setIsActive(true);
         user.setIsNotLocked(true);
         user.setRoles(Role.ROLE_USER.name());
         user.setAuthorities(Role.ROLE_USER.getAuthorities());
-        user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
+        user.setImageUrl(getTemporaryProfileImageUrl(userRegisterDto.getUsername()));
         userRepository.save(user);
-        LOGGER.info("User user password is: " + password);
-        return user;
+        LOGGER.info("User user password is: " + userRegisterDto.getPassword());
     }
 
     @Override
@@ -102,7 +116,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setIsNotLocked(isNotLocked);
         user.setRoles(getRoleEnumName(role).name());
         user.setAuthorities(getRoleEnumName(role).getAuthorities());
-        user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
+        user.setImageUrl(getTemporaryProfileImageUrl(username));
         userRepository.save(user);
         saveProfileImage(user, profileImage);
         return user;
@@ -156,18 +170,33 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<User> getUsersBySearchString(String searchString) {
-        return userRepository.findByUsernameContains(searchString);
+    public List<User> getUsersByUsername(String searchString) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        List<User> users = userRepository.findByUsernameContains(searchString);
+        return users.stream().filter(user -> !Objects.equals(user.getUsername(), currentUserName)).collect(Collectors.toList());
     }
 
     @Override
-    public User findUserByUsername(String username) {
+    public User findUserByUsername(String username) throws UserNotFoundException {
         return userRepository.findUserByUsername(username);
     }
 
     @Override
-    public User findUserByEmail(String email) {
+    public User findUserByEmail(String email) throws UserNotFoundException {
         return userRepository.findUserByEmail(email);
+    }
+
+    @Override
+    public User findUserById(Long id) throws UserNotFoundException {
+        return userRepository.findUserById(id);
+    }
+
+    @Override
+    public User getCurrentUser() throws UserNotFoundException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        return findUserByUsername(currentUserName);
     }
 
     private String getTemporaryProfileImageUrl(String username) {
@@ -230,7 +259,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             }
             Files.deleteIfExists(Paths.get(userFolder + user.getUsername() + FileConstant.DOT + FileConstant.JPG_EXTENSION));
             Files.copy(profileImage.getInputStream(), userFolder.resolve(user.getUsername() + FileConstant.DOT + FileConstant.JPG_EXTENSION), REPLACE_EXISTING);
-            user.setProfileImageUrl(setProfileImageUrl(user.getUsername()));
+            user.setImageUrl(setProfileImageUrl(user.getUsername()));
             userRepository.save(user);
             LOGGER.info(FileConstant.FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
         }

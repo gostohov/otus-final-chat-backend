@@ -36,6 +36,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 @EnableWebSocketMessageBroker
 public class WebSocketConfigSpringSession extends AbstractSessionWebSocketMessageBrokerConfigurer<ExpiringSession> {
+
     @Value("${chat.relay.host}")
     private String relayHost;
 

@@ -1,18 +1,17 @@
 package com.gostokhov.chat.dto.user;
 
-import com.gostokhov.chat.dto.userChatRoom.UserChatRoomDto;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.Set;
 
 @Data
 public class UserDto {
+    Long id;
     String firstName;
     String lastName;
     String username;
     String email;
-    String profileImageUrl;
+    String imageUrl;
     Date lastLoginDate;
     Date lastLoginDateDisplay;
     Date joinDate;
@@ -20,5 +19,4 @@ public class UserDto {
     String[] authorities;
     Boolean isActive;
     Boolean isNotLocked;
-    Set<UserChatRoomDto> chatRooms;
 }

@@ -1,13 +1,16 @@
 package com.gostokhov.chat.service;
 
 import com.gostokhov.chat.entites.ChatRoom;
-import com.gostokhov.chat.entites.InstantMessage;
+import com.gostokhov.chat.exception.domain.UserNotFoundException;
 
 import java.util.List;
 
 public interface ChatRoomService {
-    ChatRoom save(ChatRoom chatRoom);
-    ChatRoom findById(String chatRoomId);
-    List<ChatRoom> findAll();
-    void sendPublicMessage(InstantMessage instantMessage);
+    ChatRoom createPrivateChatRoom(String username) throws UserNotFoundException;
+
+    ChatRoom updateChatRoom(ChatRoom chatRoom);
+
+    List<ChatRoom> findChatRoomListByUserIds(List<Long> userIds) throws UserNotFoundException;
+
+    ChatRoom findChatRoomById(Long id);
 }

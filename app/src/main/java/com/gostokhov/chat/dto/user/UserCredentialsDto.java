@@ -3,7 +3,7 @@ package com.gostokhov.chat.dto.user;
 import lombok.Data;
 
 @Data
-public class UserLoginDto {
+public class UserCredentialsDto {
     String username;
     String password;
 }

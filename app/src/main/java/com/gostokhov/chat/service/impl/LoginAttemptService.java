@@ -1,4 +1,4 @@
-package com.gostokhov.chat.service;
+package com.gostokhov.chat.service.impl;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

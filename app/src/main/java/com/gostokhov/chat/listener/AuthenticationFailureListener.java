@@ -1,6 +1,6 @@
 package com.gostokhov.chat.listener;
 
-import com.gostokhov.chat.service.LoginAttemptService;
+import com.gostokhov.chat.service.impl.LoginAttemptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;

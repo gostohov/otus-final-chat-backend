@@ -32,6 +32,17 @@ spring:
     user: root
     password: letmein
     schemas: chat
+    enabled: false
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: Trace
+        SQL: DEBUG
 
 chat:
   relay:

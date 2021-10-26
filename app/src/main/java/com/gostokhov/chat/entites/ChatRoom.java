@@ -1,17 +1,18 @@
 package com.gostokhov.chat.entites;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.gostokhov.chat.enumiration.ChatRoomType;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Setter
 @Getter
-@RequiredArgsConstructor
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Entity
 @Table
@@ -26,6 +27,9 @@ public class ChatRoom {
     @ManyToMany(mappedBy = "chatRooms", fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<User> users = new HashSet<>();
+
+    private ChatRoomType type;
+    private Date lastTimeUpdated;
 
     @Override
     public int hashCode() {
