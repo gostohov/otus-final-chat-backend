@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -31,31 +32,48 @@ public class InstantMessageServiceImpl implements InstantMessageService {
 	@Override
 	@Transactional
 	public void sendMessage(InstantMessageDto instantMessageDto) throws UserNotFoundException {
+//		InstantMessage instantMessage = new InstantMessage(
+//				instantMessageDto.getChatRoomId(),
+//				instantMessageDto.getAuthorUsername(),
+//				instantMessageDto.getRecipientUsername(),
+//				instantMessageDto.getContent()
+//		);
+//		ChatRoom chatRoom = chatRoomService.findChatRoomById(instantMessage.getChatRoomId());
+//		if (Objects.isNull(chatRoom)) {
+//			chatRoom = chatRoomService.createPrivateChatRoom(instantMessage.getRecipientUsernameList());
+//		}
+//		instantMessage.setChatRoomId(chatRoom.getId());
+//		chatRoom.setLastTimeUpdated(instantMessage.getDate());
+//		chatRoomService.updateChatRoom(chatRoom);
+//
+//		InstantMessage message = instantMessageRepository.save(instantMessage);
+//		InstantMessageDto messageDto = modelMapper.map(message, InstantMessageDto.class);
+//
+//		if (chatRoom.getUsers() != null) {
+//			chatRoom.getUsers()
+//					.stream()
+//					.map(User::getUsername)
+//					.forEach(username -> webSocketMessagingTemplate.convertAndSendToUser(username, "/queue/messages", messageDto));
+//		} else {
+//			webSocketMessagingTemplate.convertAndSendToUser(instantMessage.getAuthorUsername(), "/queue/messages", messageDto);
+//			webSocketMessagingTemplate.convertAndSendToUser(instantMessage.getRecipientUsernameList(), "/queue/messages", messageDto);
+//		}
+	}
+
+	@Override
+	@Transactional
+	public void sendGreetingMessage(ChatRoom chatRoom, Set<String> usernameList) {
 		InstantMessage instantMessage = new InstantMessage(
-				instantMessageDto.getChatRoomId(),
-				instantMessageDto.getAuthorUsername(),
-				instantMessageDto.getRecipientUsername(),
-				instantMessageDto.getContent()
+				chatRoom.getId(),
+				"system",
+				usernameList,
+				"Welcome to new chat group: " + chatRoom.getName()
 		);
-		ChatRoom chatRoom = chatRoomService.findChatRoomById(instantMessage.getChatRoomId());
-		if (Objects.isNull(chatRoom)) {
-			chatRoom = chatRoomService.createPrivateChatRoom(instantMessage.getRecipientUsername());
-		}
-		instantMessage.setChatRoomId(chatRoom.getId());
 		chatRoom.setLastTimeUpdated(instantMessage.getDate());
 		chatRoomService.updateChatRoom(chatRoom);
-
-		InstantMessage message = instantMessageRepository.save(instantMessage);
-		InstantMessageDto messageDto = modelMapper.map(message, InstantMessageDto.class);
-
-		if (chatRoom.getUsers() != null) {
-			chatRoom.getUsers()
-					.stream()
-					.map(User::getUsername)
-					.forEach(username -> webSocketMessagingTemplate.convertAndSendToUser(username, "/queue/messages", messageDto));
-		} else {
-			webSocketMessagingTemplate.convertAndSendToUser(instantMessage.getAuthorUsername(), "/queue/messages", messageDto);
-			webSocketMessagingTemplate.convertAndSendToUser(instantMessage.getRecipientUsername(), "/queue/messages", messageDto);
+		InstantMessageDto instantMessageDto = modelMapper.map(instantMessage, InstantMessageDto.class);
+		for (String username : usernameList) {
+			webSocketMessagingTemplate.convertAndSendToUser(username, "/queue/messages", instantMessageDto);
 		}
 	}
 

@@ -8,6 +8,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -22,14 +23,14 @@ public class InstantMessage {
     private Date date;
 
     private String authorUsername;
-    private String recipientUsername;
+    private Set<String> recipientUsernameList;
     private String content;
 
-    public InstantMessage(Long chatRoomId, String authorUsername, String recipientUsername, String content) {
+    public InstantMessage(Long chatRoomId, String authorUsername, Set<String> recipientUsernameList, String content) {
         this.chatRoomId = chatRoomId;
         this.date = new Date();
         this.authorUsername = authorUsername;
-        this.recipientUsername = recipientUsername;
+        this.recipientUsernameList = recipientUsernameList;
         this.content = content;
     }
 

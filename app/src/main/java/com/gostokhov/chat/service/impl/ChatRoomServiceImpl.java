@@ -1,5 +1,6 @@
 package com.gostokhov.chat.service.impl;
 
+import com.gostokhov.chat.dto.chatRoom.ChatRoomCreateDto;
 import com.gostokhov.chat.entites.ChatRoom;
 import com.gostokhov.chat.entites.User;
 import com.gostokhov.chat.entites.UserChatRoom;
@@ -10,12 +11,15 @@ import com.gostokhov.chat.repository.UserChatRoomRepository;
 import com.gostokhov.chat.service.ChatRoomService;
 import com.gostokhov.chat.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+
+import static com.gostokhov.chat.constant.UserImplConstant.NO_USER_FOUND_BY_USERNAME;
 
 @RequiredArgsConstructor
 @Service
@@ -40,6 +44,41 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             return chatRoom;
         }
         return null;
+    }
+
+    @Override
+    @Transactional
+    public ChatRoom createChatRoom(ChatRoomCreateDto chatRoomCreateDto) throws UserNotFoundException {
+        Set<User> users = validateUsernameList(chatRoomCreateDto.getUsernameList());
+        ChatRoomType chatRoomType = chatRoomCreateDto.getUsernameList().size() > 2 ? ChatRoomType.GROUP : ChatRoomType.PRIVATE;
+        ChatRoom chatRoom = chatRoomRepository.save(
+                ChatRoom.builder()
+                        .name(chatRoomCreateDto.getName())
+                        .description(chatRoomCreateDto.getDescription())
+                        .type(chatRoomType)
+                        .build()
+        );
+        createUserChatRoomEntities(chatRoom, users);
+        return chatRoom;
+    }
+
+    private Set<User> validateUsernameList(Set<String> usernameList) throws UserNotFoundException {
+        Set<User> users = new HashSet<>();
+        for (String username : usernameList) {
+            User user = userService.findUserByUsername(username);
+            if (user == null) {
+                throw new UserNotFoundException(NO_USER_FOUND_BY_USERNAME + username);
+            } else {
+                users.add(user);
+            }
+        }
+        return users;
+    }
+
+    private void createUserChatRoomEntities(ChatRoom chatRoom, Set<User> users) {
+        for (User user : users) {
+            userChatRoomRepository.save(new UserChatRoom(user, chatRoom));
+        }
     }
 
     @Override
