@@ -37,9 +37,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.gostokhov.chat.constant.UserImplConstant.*;
@@ -197,6 +195,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
         return findUserByUsername(currentUserName);
+    }
+
+    @Override
+    public Set<User> validateUsernameList(Set<String> usernameList) throws UserNotFoundException {
+        Set<User> users = new HashSet<>();
+        for (String username : usernameList) {
+            User user = findUserByUsername(username);
+            if (user == null) {
+                throw new UserNotFoundException(NO_USER_FOUND_BY_USERNAME + username);
+            } else {
+                users.add(user);
+            }
+        }
+        return users;
     }
 
     private String getTemporaryProfileImageUrl(String username) {

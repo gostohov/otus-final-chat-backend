@@ -7,8 +7,6 @@ import com.gostokhov.chat.exception.domain.UserNotFoundException;
 import java.util.List;
 
 public interface ChatRoomService {
-    ChatRoom createPrivateChatRoom(String username) throws UserNotFoundException;
-
     ChatRoom createChatRoom(ChatRoomCreateDto chatRoomCreateDto) throws UserNotFoundException;
 
     ChatRoom updateChatRoom(ChatRoom chatRoom);

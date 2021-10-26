@@ -14,12 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
-import static com.gostokhov.chat.constant.UserImplConstant.NO_USER_FOUND_BY_USERNAME;
 
 @RequiredArgsConstructor
 @Service
@@ -30,26 +27,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     @Transactional
-    public ChatRoom createPrivateChatRoom(String username) throws UserNotFoundException {
-        User user = userService.findUserByUsername(username);
-        if (Objects.nonNull(user)) {
-            User currentUser = userService.getCurrentUser();
-
-            ChatRoom chatRoom = chatRoomRepository.save(
-                ChatRoom.builder().type(ChatRoomType.PRIVATE).build()
-            );
-
-            userChatRoomRepository.save(new UserChatRoom(user, chatRoom));
-            userChatRoomRepository.save(new UserChatRoom(currentUser, chatRoom));
-            return chatRoom;
-        }
-        return null;
-    }
-
-    @Override
-    @Transactional
     public ChatRoom createChatRoom(ChatRoomCreateDto chatRoomCreateDto) throws UserNotFoundException {
-        Set<User> users = validateUsernameList(chatRoomCreateDto.getUsernameList());
+        Set<User> users = userService.validateUsernameList(chatRoomCreateDto.getUsernameList());
         ChatRoomType chatRoomType = chatRoomCreateDto.getUsernameList().size() > 2 ? ChatRoomType.GROUP : ChatRoomType.PRIVATE;
         ChatRoom chatRoom = chatRoomRepository.save(
                 ChatRoom.builder()
@@ -60,19 +39,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         );
         createUserChatRoomEntities(chatRoom, users);
         return chatRoom;
-    }
-
-    private Set<User> validateUsernameList(Set<String> usernameList) throws UserNotFoundException {
-        Set<User> users = new HashSet<>();
-        for (String username : usernameList) {
-            User user = userService.findUserByUsername(username);
-            if (user == null) {
-                throw new UserNotFoundException(NO_USER_FOUND_BY_USERNAME + username);
-            } else {
-                users.add(user);
-            }
-        }
-        return users;
     }
 
     private void createUserChatRoomEntities(ChatRoom chatRoom, Set<User> users) {

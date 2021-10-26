@@ -8,11 +8,11 @@ import com.gostokhov.chat.exception.domain.EmailExistException;
 import com.gostokhov.chat.exception.domain.EmailNotFoundException;
 import com.gostokhov.chat.exception.domain.UserNotFoundException;
 import com.gostokhov.chat.exception.domain.UsernameExistException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
     JwtToken generateJwtTokenPojo(UserCredentialsDto userCredentialsDto) throws UserNotFoundException;
@@ -40,4 +40,6 @@ public interface UserService {
     void resetPassword(String email) throws EmailNotFoundException;
 
     User updateProfileImage(String username, MultipartFile profileImage) throws UserNotFoundException, EmailExistException, UsernameExistException, IOException;
+
+    Set<User> validateUsernameList(Set<String> usernameList) throws UserNotFoundException;
 }
