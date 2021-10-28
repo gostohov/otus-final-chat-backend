@@ -1,0 +1,18 @@
+services:
+  mysql:
+    image: "mysql:8.0.26"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: letmein
+      MYSQL_DATABASE: chat
+  cassandra:
+    image: "cassandra:latest"
+    ports:
+      - "9042:9042"
+  rabbitmq-stomp:
+    image: "jorgeacetozi/rabbitmq-stomp:3.6"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
